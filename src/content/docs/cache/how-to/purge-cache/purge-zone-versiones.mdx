@@ -1,0 +1,84 @@
+---
+title: Purge zone versions via API
+pcx_content_type: how-to
+sidebar:
+  order: 8
+
+---
+
+To purge zone versions via the Cloudflare API, follow these steps:
+
+## Step 1: Retrieve the environment ID
+
+First, retrieve your zone's environment ID using the following API request:
+
+```bash
+https://api.cloudflare.com/client/v4/zones/<zone-tag>/environments | jq .
+```
+
+This API call will return a JSON response similar to the example below:
+
+```json
+{
+  "result": {
+    "environments": [
+      {
+        "name": "Production",
+        "ref": "40bebe5d89b34840a573f51834a54006",
+        "version": 0,
+        "expression": "(cf.zone.name eq \"jfowler.theburritobot.com\")",
+        "locked_on_deployment": false,
+        "position": {
+          "before": "53278ccfd7564fa69172f19b43c8b8a9"
+        }
+      },
+      {
+        "name": "Staging",
+        "ref": "53278ccfd7564fa69172f19b43c8b8a9",
+        "version": 0,
+        "expression": "((cf.edge.server_ip in {162.159.133.39 162.159.134.39})) and (cf.zone.name eq \"jfowler.theburritobot.com\")",
+        "locked_on_deployment": false,
+        "position": {
+          "before": "2f85286bafdf439f95fae39c4bdd80ac",
+          "after": "40bebe5d89b34840a573f51834a54006"
+        }
+      },
+      {
+        "name": "Development",
+        "ref": "2f85286bafdf439f95fae39c4bdd80ac",
+        "version": 0,
+        "expression": "((any(http.request.cookies[\"development\"][*] eq \"true\"))) and (cf.zone.name eq \"jfowler.theburritobot.com\")",
+        "locked_on_deployment": false,
+        "position": {
+          "after": "53278ccfd7564fa69172f19b43c8b8a9"
+        }
+      }
+    ]
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+In this particular example, we have three environments: production, staging and development. You can find the environment ID in the `ref` field.
+
+## Step 2: Purge cache per environment
+
+To purge the production environmet, use the general cache purge endpoint:
+
+```bash
+https://api.cloudflare.com/client/v4/zones/<zone-tag>/purge_cache/
+```
+
+To purge the staging environment, use the following request: 
+
+```bash
+https://api.cloudflare.com/client/v4/zones/<zone-tag>/environments/53278ccfd7564fa69172f19b43c8b8a9/purge_cache/
+```
+
+To purge the development environment, use the following request:
+
+```bash
+https://api.cloudflare.com/client/v4/zones/<zone-tag>/environments/2f85286bafdf439f95fae39c4bdd80ac/purge_cache/
+```
