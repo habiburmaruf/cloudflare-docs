@@ -197,17 +197,17 @@ export default defineConfig({
 							],
 						}),
 						starlightDocSearch({
-							appId: "8MU1G3QO9P",
-							apiKey: "4edb0a6cef3338ff4bcfbc6b3d2db56b",
-							indexName: "TEST - Re-dev docs",
+							appId: "D32WIYFTUF",
+							apiKey: "5cec275adc19dd3bc17617f7d9cf312a",
+							indexName: "prod_devdocs",
 						}),
 						starlightImageZoom(),
 					]
 				: [
 						starlightDocSearch({
-							appId: "8MU1G3QO9P",
-							apiKey: "4edb0a6cef3338ff4bcfbc6b3d2db56b",
-							indexName: "TEST - Re-dev docs",
+							appId: "D32WIYFTUF",
+							apiKey: "5cec275adc19dd3bc17617f7d9cf312a",
+							indexName: "prod_devdocs",
 						}),
 						starlightImageZoom(),
 					],
